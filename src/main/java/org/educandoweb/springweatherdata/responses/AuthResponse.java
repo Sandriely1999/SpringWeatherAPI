@@ -1,4 +1,4 @@
-package model.responses;
+package org.educandoweb.springweatherdata.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

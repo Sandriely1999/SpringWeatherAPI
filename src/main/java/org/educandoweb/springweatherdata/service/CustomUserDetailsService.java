@@ -1,12 +1,12 @@
-package service;
+package org.educandoweb.springweatherdata.service;
 
 import lombok.RequiredArgsConstructor;
-import model.entities.User;
+import org.educandoweb.springweatherdata.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import repositories.UserRepository;
+import org.educandoweb.springweatherdata.repositories.UserRepository;
 
 import java.util.ArrayList;
 

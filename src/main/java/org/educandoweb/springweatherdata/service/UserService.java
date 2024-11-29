@@ -1,14 +1,14 @@
-package service;
+package org.educandoweb.springweatherdata.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import model.entities.User;
-import model.requests.AuthRequest;
-import model.responses.UserResponse;
+import org.educandoweb.springweatherdata.entities.User;
+import org.educandoweb.springweatherdata.requests.AuthRequest;
+import org.educandoweb.springweatherdata.responses.UserResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import repositories.UserRepository;
+import org.educandoweb.springweatherdata.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 

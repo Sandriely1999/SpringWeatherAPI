@@ -1,18 +1,18 @@
-package controller;
+package org.educandoweb.springweatherdata.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import model.requests.AuthRequest;
-import model.responses.AuthResponse;
+import org.educandoweb.springweatherdata.requests.AuthRequest;
+import org.educandoweb.springweatherdata.responses.AuthResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import service.UserService;
-import utils.JwtUtil;
+import org.educandoweb.springweatherdata.service.UserService;
+import org.educandoweb.springweatherdata.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/api/auth")

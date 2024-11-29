@@ -1,7 +1,7 @@
-package repositories;
+package org.educandoweb.springweatherdata.repositories;
 
-import model.entities.User;
-import model.entities.WeatherSearch;
+import org.educandoweb.springweatherdata.entities.User;
+import org.educandoweb.springweatherdata.entities.WeatherSearch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

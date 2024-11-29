@@ -1,4 +1,4 @@
-package model.entities;
+package org.educandoweb.springweatherdata.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

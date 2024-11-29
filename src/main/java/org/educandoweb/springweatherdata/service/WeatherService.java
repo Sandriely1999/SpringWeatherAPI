@@ -1,16 +1,16 @@
-package service;
+package org.educandoweb.springweatherdata.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import model.entities.User;
-import model.entities.WeatherSearch;
-import model.responses.WeatherSearchResponse;
+import org.educandoweb.springweatherdata.entities.User;
+import org.educandoweb.springweatherdata.entities.WeatherSearch;
+import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import repositories.UserRepository;
-import repositories.WeatherSearchRepository;
+import org.educandoweb.springweatherdata.repositories.UserRepository;
+import org.educandoweb.springweatherdata.repositories.WeatherSearchRepository;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

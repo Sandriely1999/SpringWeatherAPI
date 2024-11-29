@@ -1,8 +1,8 @@
-package controller;
+package org.educandoweb.springweatherdata.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import model.responses.WeatherSearchResponse;
+import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import service.WeatherService;
+import org.educandoweb.springweatherdata.service.WeatherService;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +33,9 @@ public class WeatherController {
     @GetMapping("/history")
     public ResponseEntity<List<WeatherSearchResponse>> getSearchHistory(
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
         List<WeatherSearchResponse> weatherList = weatherService.getWeatherSearches(userDetails.getUsername());
         return ResponseEntity.ok(weatherList);
     }

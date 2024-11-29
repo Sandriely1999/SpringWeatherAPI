@@ -1,4 +1,4 @@
-package model.requests;
+package org.educandoweb.springweatherdata.requests;
 
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;

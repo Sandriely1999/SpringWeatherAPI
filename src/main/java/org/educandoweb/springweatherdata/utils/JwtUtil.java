@@ -1,4 +1,4 @@
-package utils;
+package org.educandoweb.springweatherdata.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

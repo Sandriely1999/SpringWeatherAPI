@@ -1,6 +1,6 @@
-package repositories;
+package org.educandoweb.springweatherdata.repositories;
 
-import model.entities.User;
+import org.educandoweb.springweatherdata.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

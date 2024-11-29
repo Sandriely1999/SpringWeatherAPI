@@ -1,4 +1,4 @@
-package model.entities;
+package org.educandoweb.springweatherdata.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class WeatherSearch {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @Column(nullable = false)
