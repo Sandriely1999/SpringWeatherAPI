@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -60,15 +61,15 @@ class UserServiceTest {
 
     @Test
     void registerUser_Success() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        // Act
+
         UserResponse response = userService.registerUser(testAuthRequest);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(testUser.getUsername(), response.getUsername());
         assertTrue(response.isActive());
@@ -77,10 +78,10 @@ class UserServiceTest {
 
     @Test
     void registerUser_UsernameExists() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
 
-        // Act & Assert
+
         assertThrows(RuntimeException.class, () ->
                 userService.registerUser(testAuthRequest)
         );
@@ -88,31 +89,99 @@ class UserServiceTest {
 
     @Test
     void getCurrentUser_Success() {
-        // Arrange
+
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn("testuser");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        // Act
+
         UserResponse response = userService.getCurrentUser();
 
-        // Assert
+
         assertNotNull(response);
         assertEquals("testuser", response.getUsername());
     }
 
     @Test
+    void getCurrentUser_UserNotFound() {
+
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testuser");
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+
+        assertThrows(RuntimeException.class, () -> userService.getCurrentUser());
+    }
+
+    @Test
     void deactivateUser_Success() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        // Act
+
         UserResponse response = userService.deactivateUser("testuser");
 
-        // Assert
+
         assertNotNull(response);
         assertFalse(response.isActive());
+        verify(userRepository).save(any(User.class));
     }
+
+    @Test
+    void deactivateUser_UserNotFound() {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+
+        assertThrows(RuntimeException.class, () -> userService.deactivateUser("nonexistentuser"));
+    }
+
+    @Test
+    void changePassword_Success() {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+
+        UserResponse response = userService.changePassword("testuser", "newPassword123");
+
+
+        assertNotNull(response);
+        assertEquals(testUser.getUsername(), response.getUsername());  // Verifique se o nome do usuário está correto
+        assertTrue(response.isActive());  // Verifique se o usuário ainda está ativo
+        verify(userRepository).save(any(User.class));  // Verifique se o repositório foi chamado
+    }
+
+
+    @Test
+    void changePassword_UserNotFound() {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+
+        assertThrows(RuntimeException.class, () -> userService.changePassword("nonexistentuser", "newPassword123"));
+    }
+
+    @Test
+    void changePassword_InvalidPassword() {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+
+        UserResponse response = userService.changePassword("testuser", "newPassword123");
+
+
+        assertNotNull(response);
+        assertEquals(testUser.getUsername(), response.getUsername());  // Verifique se o nome do usuário está correto
+        assertTrue(response.isActive());  // Verifique se o usuário ainda está ativo
+        verify(passwordEncoder).encode("newPassword123");  // Verifique se o encoder foi chamado para codificar a senha
+        verify(userRepository).save(any(User.class));  // Verifique se o repositório foi chamado para salvar o usuário
+    }
+
 }

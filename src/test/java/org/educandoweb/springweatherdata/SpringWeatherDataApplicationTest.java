@@ -4,10 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringWeatherDataApplicationTests {
+class SpringWeatherDataApplicationTest {
 
     @Test
     void contextLoads() {
     }
 
+    @Test
+    void testMainMethod() {
+        SpringWeatherDataApplication.main(new String[]{});
+    }
 }

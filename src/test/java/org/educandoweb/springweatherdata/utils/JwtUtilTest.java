@@ -19,44 +19,44 @@ class JwtUtilTest {
 
     @Test
     void generateToken_ValidUsername_Success() {
-        // Act
+
         String token = jwtUtil.generateToken("testuser");
 
-        // Assert
+
         assertNotNull(token);
         assertTrue(token.length() > 0);
     }
 
     @Test
     void extractUsername_ValidToken_Success() {
-        // Arrange
+
         String token = jwtUtil.generateToken("testuser");
 
-        // Act
+
         String username = jwtUtil.extractUsername(token);
 
-        // Assert
+
         assertEquals("testuser", username);
     }
 
     @Test
     void validateToken_ValidToken_Success() {
-        // Arrange
+
         String token = jwtUtil.generateToken("testuser");
 
-        // Act
+
         boolean isValid = jwtUtil.validateToken(token, "testuser");
 
-        // Assert
+
         assertTrue(isValid);
     }
 
     @Test
     void validateToken_WrongUsername_ReturnsFalse() {
-        // Arrange
+
         String token = jwtUtil.generateToken("testuser");
 
-        // Act & Assert
+
         assertFalse(jwtUtil.validateToken(token, "wronguser"));
     }
 }

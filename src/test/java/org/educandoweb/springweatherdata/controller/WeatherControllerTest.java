@@ -49,15 +49,15 @@ class WeatherControllerTest {
 
     @Test
     void getCurrentWeather_Success() {
-        // Arrange
+
         when(weatherService.getCurrentWeather(anyString(), anyString()))
                 .thenReturn(weatherResponse);
 
-        // Act
+
         ResponseEntity<WeatherSearchResponse> response =
                 weatherController.getCurrentWeather("London", userDetails);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("London", response.getBody().getCity());
@@ -65,16 +65,16 @@ class WeatherControllerTest {
 
     @Test
     void getSearchHistory_Success() {
-        // Arrange
+
         List<WeatherSearchResponse> weatherList = Arrays.asList(weatherResponse);
         when(weatherService.getWeatherSearches(anyString()))
                 .thenReturn(weatherList);
 
-        // Act
+
         ResponseEntity<List<WeatherSearchResponse>> response =
                 weatherController.getSearchHistory(userDetails);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertFalse(response.getBody().isEmpty());
@@ -83,7 +83,7 @@ class WeatherControllerTest {
 
     @Test
     void getStatistics_Success() {
-        // Arrange
+
         Map<String, Object> statistics = new HashMap<>();
         statistics.put("totalSearches", 10);
         statistics.put("mostSearchedCity", "London");
@@ -91,11 +91,11 @@ class WeatherControllerTest {
 
         when(weatherService.getStatistics(anyString())).thenReturn(statistics);
 
-        // Act
+
         ResponseEntity<Map<String, Object>> response =
                 weatherController.getStatistics(userDetails);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(10, response.getBody().get("totalSearches"));

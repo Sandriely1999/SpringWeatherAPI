@@ -56,17 +56,17 @@ class AuthenticationControllerTest {
 
     @Test
     void register_Success() {
-        // Arrange
+
         when(userService.registerUser(any(AuthRequest.class)))
                 .thenReturn(userResponse);
         when(jwtUtil.generateToken(anyString()))
                 .thenReturn("test.jwt.token");
 
-        // Act
+
         ResponseEntity<AuthResponse> response =
                 authController.register(authRequest);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("testuser", response.getBody().getUsername());
@@ -75,18 +75,18 @@ class AuthenticationControllerTest {
 
     @Test
     void login_Success() {
-        // Arrange
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(authentication.getName()).thenReturn("testuser");
         when(jwtUtil.generateToken(anyString()))
                 .thenReturn("test.jwt.token");
 
-        // Act
+
         ResponseEntity<AuthResponse> response =
                 authController.login(authRequest);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("testuser", response.getBody().getUsername());

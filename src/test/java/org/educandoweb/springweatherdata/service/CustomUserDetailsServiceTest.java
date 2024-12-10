@@ -42,13 +42,13 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_Success() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
 
-        // Act
+
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
 
-        // Assert
+
         assertNotNull(userDetails);
         assertEquals(testUser.getUsername(), userDetails.getUsername());
         assertEquals(testUser.getPassword(), userDetails.getPassword());
@@ -57,10 +57,10 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_UserNotFound() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        // Act & Assert
+
         assertThrows(UsernameNotFoundException.class, () ->
                 userDetailsService.loadUserByUsername("nonexistent")
         );

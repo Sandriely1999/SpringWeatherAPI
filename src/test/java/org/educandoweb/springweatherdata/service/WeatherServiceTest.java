@@ -49,11 +49,11 @@ public class WeatherServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Configure valores das propriedades
+
         ReflectionTestUtils.setField(weatherService, "apiUrl", "http://test.api/");
         ReflectionTestUtils.setField(weatherService, "apiKey", "test-key");
 
-        // Criar usuário de teste
+
         testUser = User.builder()
                 .id(1L)
                 .username("testuser")
@@ -62,7 +62,7 @@ public class WeatherServiceTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Criar pesquisa de clima de teste
+
         testWeatherSearch = WeatherSearch.builder()
                 .id(1L)
                 .user(testUser)
@@ -73,7 +73,7 @@ public class WeatherServiceTest {
                 .searchDate(LocalDateTime.now())
                 .build();
 
-        // Criar mock de dados do clima
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode mainNode = mapper.createObjectNode();
         mainNode.put("temp", 20.0);
@@ -91,15 +91,15 @@ public class WeatherServiceTest {
 
     @Test
     void getCurrentWeather_ShouldReturnWeatherData() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
         when(restTemplate.getForObject(anyString(), any())).thenReturn(mockWeatherData);
         when(weatherSearchRepository.save(any(WeatherSearch.class))).thenReturn(testWeatherSearch);
 
-        // Act
+
         WeatherSearchResponse response = weatherService.getCurrentWeather("London", "testuser");
 
-        // Assert
+
         assertNotNull(response);
         assertEquals("London", response.getCity());
         assertEquals(20.0, response.getTemperature());
@@ -109,15 +109,15 @@ public class WeatherServiceTest {
 
     @Test
     void getWeatherSearches_ShouldReturnSearchHistory() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
         when(weatherSearchRepository.findByUserOrderBySearchDateDesc(any(User.class)))
                 .thenReturn(Arrays.asList(testWeatherSearch));
 
-        // Act
+
         List<WeatherSearchResponse> responses = weatherService.getWeatherSearches("testuser");
 
-        // Assert
+
         assertFalse(responses.isEmpty());
         assertEquals(1, responses.size());
         assertEquals("London", responses.get(0).getCity());
@@ -125,15 +125,15 @@ public class WeatherServiceTest {
 
     @Test
     void getStatistics_ShouldReturnCorrectStats() {
-        // Arrange
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(testUser));
         when(weatherSearchRepository.findByUserOrderBySearchDateDesc(any(User.class)))
                 .thenReturn(Arrays.asList(testWeatherSearch));
 
-        // Act
+
         Map<String, Object> statistics = weatherService.getStatistics("testuser");
 
-        // Assert
+
         assertNotNull(statistics);
         assertEquals(1, statistics.get("totalSearches"));
         assertEquals("London", statistics.get("mostSearchedCity"));
