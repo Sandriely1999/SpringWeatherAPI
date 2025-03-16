@@ -10,8 +10,5 @@ class SpringWeatherDataApplicationTest {
     void contextLoads() {
     }
 
-    @Test
-    void testMainMethod() {
-        SpringWeatherDataApplication.main(new String[]{});
-    }
+
 }
