@@ -7,7 +7,7 @@ import org.educandoweb.springweatherdata.entities.User;
 import org.educandoweb.springweatherdata.repositories.FavoriteCityRepository;
 import org.educandoweb.springweatherdata.repositories.UserRepository;
 import org.educandoweb.springweatherdata.responses.FavoriteCityResponse;
-import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
+import org.educandoweb.springweatherdata.responses.ForecastResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class FavoriteCityService {
     private final FavoriteCityRepository favoriteCityRepository;
     private final UserRepository userRepository;
-    private final WeatherService weatherService;
+    private final ForecastService forecastService;
 
     @Transactional
     public FavoriteCityResponse addFavoriteCity(String cityName, Boolean isDefault, String username) {
@@ -104,14 +104,14 @@ public class FavoriteCityService {
         favoriteCityRepository.delete(favoriteCity);
     }
 
-    public WeatherSearchResponse getDefaultCityWeather(String username) {
+    public ForecastResponse getDefaultCityWeather(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         FavoriteCity defaultCity = favoriteCityRepository.findByUserAndIsDefaultTrue(user)
                 .orElseThrow(() -> new RuntimeException("No default city set"));
 
-        return weatherService.getCurrentWeather(defaultCity.getCityName(), username);
+        return forecastService.getCurrentWeather(defaultCity.getCityName());
     }
 
     private FavoriteCityResponse mapToResponse(FavoriteCity favoriteCity) {

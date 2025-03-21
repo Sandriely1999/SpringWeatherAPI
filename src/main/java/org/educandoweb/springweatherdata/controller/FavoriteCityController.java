@@ -3,7 +3,7 @@ package org.educandoweb.springweatherdata.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.educandoweb.springweatherdata.responses.FavoriteCityResponse;
-import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
+import org.educandoweb.springweatherdata.responses.ForecastResponse;
 import org.educandoweb.springweatherdata.service.FavoriteCityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -53,9 +53,9 @@ public class FavoriteCityController {
     }
 
     @GetMapping("/default/weather")
-    public ResponseEntity<WeatherSearchResponse> getDefaultCityWeather(
+    public ResponseEntity<ForecastResponse> getDefaultCityWeather(
             @AuthenticationPrincipal UserDetails userDetails) {
-        WeatherSearchResponse weather = favoriteCityService.getDefaultCityWeather(userDetails.getUsername());
+       ForecastResponse weather = favoriteCityService.getDefaultCityWeather(userDetails.getUsername());
         return ResponseEntity.ok(weather);
     }
 }

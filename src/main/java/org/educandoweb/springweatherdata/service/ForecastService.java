@@ -2,10 +2,7 @@ package org.educandoweb.springweatherdata.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.educandoweb.springweatherdata.entities.User;
-import org.educandoweb.springweatherdata.entities.WeatherForecast;
 import org.educandoweb.springweatherdata.repositories.UserRepository;
-import org.educandoweb.springweatherdata.repositories.WeatherForecastRepository;
 import org.educandoweb.springweatherdata.responses.ForecastResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,13 +13,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class ForecastService {
     private final RestTemplate restTemplate;
-    private final WeatherForecastRepository forecastRepository;
     private final UserRepository userRepository;
 
     @Value("${weather.api.url}")
@@ -31,30 +26,29 @@ public class ForecastService {
     @Value("${weather.api.key}")
     private String apiKey;
 
-    public ForecastService(RestTemplate restTemplate, WeatherForecastRepository forecastRepository, UserRepository userRepository) {
+    public ForecastService(RestTemplate restTemplate, UserRepository userRepository) {
         this.restTemplate = restTemplate;
-        this.forecastRepository = forecastRepository;
+
         this.userRepository = userRepository;
+
     }
 
-    public List<ForecastResponse> getFiveDayForecast(String cityName, String username) {
+    public List<ForecastResponse> getFiveDayForecast(String cityName) {
         log.info("Fetching 5-day forecast data for city: {}", cityName);
         String url = String.format("%sforecast?q=%s&appid=%s&units=metric&lang=pt_br",
                 apiUrl, cityName, apiKey);
 
         try {
+
             JsonNode response = restTemplate.getForObject(url, JsonNode.class);
-            return saveForecastData(cityName, response, username);
+            return translateForecastListJsonToResponse(cityName, response);
         } catch (Exception e) {
             log.error("Error fetching forecast data: {}", e.getMessage());
             throw new RuntimeException("Error fetching forecast data", e);
         }
     }
 
-    private List<ForecastResponse> saveForecastData(String cityName, JsonNode forecastData, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    private List<ForecastResponse> translateForecastListJsonToResponse(String cityName, JsonNode forecastData) {
         List<ForecastResponse> forecastResponses = new ArrayList<>();
         JsonNode list = forecastData.path("list");
 
@@ -67,43 +61,51 @@ public class ForecastService {
             Integer humidity = forecast.path("main").path("humidity").asInt();
             String description = forecast.path("weather").get(0).path("description").asText();
 
-            WeatherForecast weatherForecast = WeatherForecast.builder()
-                    .user(user)
+
+            forecastResponses.add(ForecastResponse.builder()
                     .city(cityName)
                     .temperature(temperature)
                     .humidity(humidity)
                     .description(description)
                     .forecastDate(forecastDate)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            WeatherForecast savedForecast = forecastRepository.save(weatherForecast);
-
-            forecastResponses.add(ForecastResponse.builder()
-                    .city(savedForecast.getCity())
-                    .temperature(savedForecast.getTemperature())
-                    .humidity(savedForecast.getHumidity())
-                    .description(savedForecast.getDescription())
-                    .forecastDate(savedForecast.getForecastDate())
                     .build());
         }
 
         return forecastResponses;
     }
 
-    public List<ForecastResponse> getForecastsByCity(String cityName, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return forecastRepository.findByUserAndCityOrderByForecastDateAsc(user, cityName)
-                .stream()
-                .map(forecast -> ForecastResponse.builder()
-                        .city(forecast.getCity())
-                        .temperature(forecast.getTemperature())
-                        .humidity(forecast.getHumidity())
-                        .description(forecast.getDescription())
-                        .forecastDate(forecast.getForecastDate())
-                        .build())
-                .collect(Collectors.toList());
+    public ForecastResponse getCurrentWeather(String cityName) {
+        log.info("Fetching weather data for city: {}", cityName);
+        String url = String.format("%sweather?q=%s&appid=%s&units=metric&lang=pt_br",
+                apiUrl, cityName, apiKey);
+
+        try {
+            // Criando uma classe interna para mapear a resposta da API
+            JsonNode response = restTemplate.getForObject(url, JsonNode.class);
+            return translateForecastJsonToResponse(cityName, response);
+        } catch (Exception e) {
+            log.error("Error fetching weather data: {}", e.getMessage());
+            throw new RuntimeException("Error fetching weather data", e);
+        }
     }
+
+    private ForecastResponse translateForecastJsonToResponse (String cityName, JsonNode response) {
+        Double temperature = response.path("main").path("temp").asDouble();
+        Integer humidity = response.path("main").path("humidity").asInt();
+        String description = response.path("weather").get(0).path("description").asText();
+
+        ForecastResponse forecastResponse = ForecastResponse.builder()
+                .city(cityName)
+                .temperature(temperature)
+                .humidity(humidity)
+                .description(description)
+                .build();
+
+        return forecastResponse;
+    }
+
+
+
+
 }

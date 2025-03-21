@@ -34,7 +34,6 @@ public class User {
 
     private LocalDateTime updatedAt;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WeatherSearch> searches = new ArrayList<>();
+
+
 }

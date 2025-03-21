@@ -31,7 +31,7 @@ public class ComparisonController {
             throw new IllegalArgumentException("At least two cities must be provided for comparison");
         }
 
-        List<WeatherComparisonResponse> comparisons = comparisonService.compareWeather(cities, userDetails.getUsername());
+        List<WeatherComparisonResponse> comparisons = comparisonService.compareWeather(cities);
         return ResponseEntity.ok(comparisons);
     }
 }

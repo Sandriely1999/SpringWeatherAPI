@@ -8,7 +8,7 @@ import org.educandoweb.springweatherdata.entities.WeatherAlert.AlertType;
 import org.educandoweb.springweatherdata.repositories.UserRepository;
 import org.educandoweb.springweatherdata.repositories.WeatherAlertRepository;
 import org.educandoweb.springweatherdata.responses.AlertResponse;
-import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
+import org.educandoweb.springweatherdata.responses.ForecastResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class AlertService {
     private final WeatherAlertRepository alertRepository;
     private final UserRepository userRepository;
-    private final WeatherService weatherService;
+    private final ForecastService forecastService;
+
 
     public AlertResponse createAlert(String city, AlertType alertType, Double thresholdValue, String username) {
         User user = userRepository.findByUsername(username)
@@ -108,7 +109,7 @@ public class AlertService {
         }
 
         // Buscar dados atuais do clima para a cidade
-        WeatherSearchResponse currentWeather = weatherService.getCurrentWeather(city, username);
+       ForecastResponse currentWeather = forecastService.getCurrentWeather(city);
         List<AlertResponse> triggeredAlerts = new ArrayList<>();
 
         for (WeatherAlert alert : activeAlerts) {

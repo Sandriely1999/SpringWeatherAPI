@@ -26,15 +26,17 @@ public class ForecastController {
     public ResponseEntity<List<ForecastResponse>> getFiveDayForecast(
             @RequestParam String city,
             @AuthenticationPrincipal UserDetails userDetails) {
-        List<ForecastResponse> forecast = forecastService.getFiveDayForecast(city, userDetails.getUsername());
+        List<ForecastResponse> forecast = forecastService.getFiveDayForecast(city);
         return ResponseEntity.ok(forecast);
     }
 
-    @GetMapping("/by-city")
-    public ResponseEntity<List<ForecastResponse>> getForecastByCity(
+    @GetMapping("/current")
+    public ResponseEntity<ForecastResponse> getCurrentWeather(
             @RequestParam String city,
             @AuthenticationPrincipal UserDetails userDetails) {
-        List<ForecastResponse> forecast = forecastService.getForecastsByCity(city, userDetails.getUsername());
-        return ResponseEntity.ok(forecast);
+        ForecastResponse weather = forecastService.getCurrentWeather(city);
+        return ResponseEntity.ok(weather);
     }
+
+
 }

@@ -2,10 +2,12 @@ package org.educandoweb.springweatherdata.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.educandoweb.springweatherdata.repositories.UserRepository;
+import org.educandoweb.springweatherdata.responses.ForecastResponse;
 import org.educandoweb.springweatherdata.responses.WeatherComparisonResponse;
-import org.educandoweb.springweatherdata.responses.WeatherSearchResponse;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,16 +17,17 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ComparisonService {
-    private final WeatherService weatherService;
+    private final UserRepository userRepository;
+    private final ForecastService forecastService;
 
-    public List<WeatherComparisonResponse> compareWeather(List<String> cities, String username) {
+    public List<WeatherComparisonResponse> compareWeather(List<String> cities) {
         List<WeatherComparisonResponse> comparisons = new ArrayList<>();
-        Map<String, WeatherSearchResponse> cityWeatherMap = new HashMap<>();
+        Map<String, ForecastResponse> cityWeatherMap = new HashMap<>();
 
         // Obter dados climáticos para cada cidade
         for (String city : cities) {
             try {
-                WeatherSearchResponse weatherData = weatherService.getCurrentWeather(city, username);
+                ForecastResponse weatherData = forecastService.getCurrentWeather(city);
                 cityWeatherMap.put(city, weatherData);
             } catch (Exception e) {
                 log.error("Error fetching weather data for city {}: {}", city, e.getMessage());
@@ -36,11 +39,11 @@ public class ComparisonService {
 
         for (int i = 0; i < processedCities.size(); i++) {
             String cityA = processedCities.get(i);
-            WeatherSearchResponse weatherA = cityWeatherMap.get(cityA);
+            ForecastResponse weatherA = cityWeatherMap.get(cityA);
 
             for (int j = i + 1; j < processedCities.size(); j++) {
                 String cityB = processedCities.get(j);
-                WeatherSearchResponse weatherB = cityWeatherMap.get(cityB);
+                ForecastResponse weatherB = cityWeatherMap.get(cityB);
 
                 // Calcular diferenças
                 double tempDiff = weatherA.getTemperature() - weatherB.getTemperature();
@@ -58,7 +61,7 @@ public class ComparisonService {
                         .humidityDifference(humidityDiff)
                         .descriptionA(weatherA.getDescription())
                         .descriptionB(weatherB.getDescription())
-                        .comparisonDate(weatherA.getSearchDate())
+                        .comparisonDate(LocalDateTime.now()) // Adicionado
                         .build();
 
                 comparisons.add(comparison);
@@ -67,4 +70,6 @@ public class ComparisonService {
 
         return comparisons;
     }
+
+
 }
