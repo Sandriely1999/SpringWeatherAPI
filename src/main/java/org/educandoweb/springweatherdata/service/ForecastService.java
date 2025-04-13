@@ -90,19 +90,24 @@ public class ForecastService {
         }
     }
 
-    private ForecastResponse translateForecastJsonToResponse (String cityName, JsonNode response) {
+    private ForecastResponse translateForecastJsonToResponse(String cityName, JsonNode response) {
         Double temperature = response.path("main").path("temp").asDouble();
         Integer humidity = response.path("main").path("humidity").asInt();
         String description = response.path("weather").get(0).path("description").asText();
 
-        ForecastResponse forecastResponse = ForecastResponse.builder()
+        // Adicione esta parte para pegar a data atual quando não houver forecastDate
+        long dt = response.path("dt").asLong();
+        LocalDateTime forecastDate = (dt != 0) ?
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(dt), ZoneId.systemDefault()) :
+                LocalDateTime.now(); // Data atual como fallback
+
+        return ForecastResponse.builder()
                 .city(cityName)
                 .temperature(temperature)
                 .humidity(humidity)
                 .description(description)
+                .forecastDate(forecastDate) // Agora nunca será nulo
                 .build();
-
-        return forecastResponse;
     }
 
 

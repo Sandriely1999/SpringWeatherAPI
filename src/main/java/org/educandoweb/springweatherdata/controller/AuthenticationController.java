@@ -10,9 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.educandoweb.springweatherdata.service.UserService;
 import org.educandoweb.springweatherdata.utils.JwtUtil;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -46,4 +49,6 @@ public class AuthenticationController {
         String token = jwtUtil.generateToken(authentication.getName());
         return ResponseEntity.ok(new AuthResponse(token, request.getUsername()));
     }
+
+
 }
