@@ -114,6 +114,15 @@ public class FavoriteCityService {
         return forecastService.getCurrentWeather(defaultCity.getCityName());
     }
 
+    public FavoriteCityResponse getDefaultCity(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return favoriteCityRepository.findByUserAndIsDefaultTrue(user)
+                .map(this::mapToResponse)
+                .orElse(null);
+    }
+
     private FavoriteCityResponse mapToResponse(FavoriteCity favoriteCity) {
         return FavoriteCityResponse.builder()
                 .id(favoriteCity.getId())

@@ -58,4 +58,11 @@ public class FavoriteCityController {
        ForecastResponse weather = favoriteCityService.getDefaultCityWeather(userDetails.getUsername());
         return ResponseEntity.ok(weather);
     }
+
+    @GetMapping("/default")
+    public ResponseEntity<FavoriteCityResponse> getDefaultCity(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        FavoriteCityResponse defaultCity = favoriteCityService.getDefaultCity(userDetails.getUsername());
+        return ResponseEntity.ok(defaultCity);
+    }
 }
