@@ -35,7 +35,9 @@ public class ComparisonService {
         }
 
         // Calcular diferenças e criar comparações para cada par de cidades
-        List<String> processedCities = new ArrayList<>(cityWeatherMap.keySet());
+        List<String> processedCities = cities.stream()
+                .filter(cityWeatherMap::containsKey)
+                .toList();
 
         for (int i = 0; i < processedCities.size(); i++) {
             String cityA = processedCities.get(i);
